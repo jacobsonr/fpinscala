@@ -8,7 +8,7 @@ Skeleton code and tests for the exercises in the book "Functional Programming in
 ### Clone the repository
 ### Checkout the desired chapter branch (The master branch can be used to verify your setup works.)
 ### Install Scala / SBT support
-Add scala support to IDEA OR install SBT OR install ensime for emacs.
+Add scala support to IDEA, or install SBT, or install metals for emacs.
 ### Open the folder in IntelliJ idea (or another IDE)
 Default settings should work.
 ### Open an SBT shell
