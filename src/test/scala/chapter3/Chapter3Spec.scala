@@ -11,7 +11,7 @@ import scala.collection.immutable
   * These are not meant to be exhaustive, but should be enough to
   * guide you to the answer if you get the tests to pass.
   */
-object Chapter2Spec extends Properties("List")
+object Chapter3Spec extends Properties("List")
 {
   def checkResults[A](expected: immutable.List[A], result: List[A]) = {
     val e2 = List(expected: _*)
