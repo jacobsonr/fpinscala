@@ -16,5 +16,9 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 .idea
-.ensime
-.ensime_cache/
+/.bloop/
+/.bsp/
+/.metals/
+/project/.bloop/
+/project/metals.sbt
+/project/project/
