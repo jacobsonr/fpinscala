@@ -5,7 +5,7 @@ ThisBuild / version          := "0.1.0-SNAPSHOT"
 ThisBuild / organization     := "com.example"
 ThisBuild / organizationName := "example"
 
-lazy val root = (project in file("."))
+lazy val chapter2 = (project in file("chapter2"))
   .settings(
     name := "Chapter 2",
     libraryDependencies ++= Seq(
