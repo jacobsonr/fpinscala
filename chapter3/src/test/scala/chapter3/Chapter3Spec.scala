@@ -105,9 +105,9 @@ object Chapter3Spec extends Properties("List")
 
   property("Exercise 3.11: product by foldLeft should be the same as product") = forAll {
     (l: immutable.List[Int]) => {
-      val ds = l.map(_ / 1000.0)
+      val ds = l.map(x => Math.abs(x) % 10000 / 10000.0)
       val l2 = List(ds: _*)
-      (product(l2)*100000).toLong == (productByFoldLeft(l2)*100000).toLong
+      (product(l2)*1000).toLong == (productByFoldLeft(l2)*1000).toLong
     }
   }
 
@@ -170,5 +170,38 @@ object Chapter3Spec extends Properties("List")
     }
   }
 
+  property("Exercise 3.18: filter") = forAll {
+    (l: immutable.List[Int]) => {
+      val l2 = List(l: _*)
+      checkResults(l.map(_ * 2), map(l2, (x: Int) => x * 2))
+      checkResults(l.map(_ + 13), map(l2, (x: Int) => x + 13))
+    }
+  }
+
+  property("Exercise 3.19: filter") = forAll {
+    (l: immutable.List[Int]) => {
+      val l2 = List(l: _*)
+      checkResults(l.filter(x => (x / 2) * 2 != x), filter(l2, (x: Int) => (x & 1) == 1))
+      checkResults(l.filter(_ < 100), filter(l2, (x: Int) => (x < 100)))
+    }
+  }
+
+  property("Exercise 3.20: flatMap") = forAll {
+    def letters(i: Int): List[Char] = List(i.toString.toCharArray().toList: _*)
+
+    (l: immutable.List[Int]) => {
+      val l2 = List(l: _*)
+
+      checkResults(l.flatMap(_.toString.toList), flatMap(l2)(letters))
+    }
+  }
+
+  property("Exercise 3.21: filterByFlatMap") = forAll {
+    (l: immutable.List[Int]) => {
+      val l2 = List(l: _*)
+      checkResults(l.filter(x => (x / 2) * 2 != x), filterByFlatMap(l2, (x: Int) => (x & 1) == 1))
+      checkResults(l.filter(_ < 100), filterByFlatMap(l2, (x: Int) => (x < 100)))
+    }
+  }
 
 }
