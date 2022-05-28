@@ -243,7 +243,13 @@ object Chapter3Spec extends Properties("List")
     }
   }
 
-  property("Exercise 3.24: hasSubsequence") = true
+  property("Exercise 3.24: hasSubsequence") = forAll {
+    (lx1: immutable.List[Int], lx2: immutable.List[Int]) => {
+      val l1 = List(lx1: _*)
+      val l2 = List(lx2: _*)
+      List.hasSubsequence(l1, l2) == (lx1 containsSlice lx2)
+    }
+  }
 
   property("Exercise 3.25: tree size") = forAll(aTree) { t =>
     Tree.size(t) == (theTrees.indexOf(t)+1)
