@@ -3,7 +3,8 @@ package com.maponics.fpinscala.chapter3
 import org.scalacheck.Properties
 import org.scalacheck.Prop.forAll
 import com.maponics.fpinscala.chapter3.List._
-import org.scalacheck.Gen.{choose, oneOf}
+import org.scalacheck.Gen.{choose, long, oneOf}
+import org.scalacheck.Gen
 import scala.collection.immutable
 
 /** Tests for Functional Programming in Scala chapter 3 exercises
@@ -88,6 +89,22 @@ object Chapter3Spec extends Properties("List")
   def if2(x: Int, y: Int) = x + y
   def if3(x: Int, y: Int) = x - y
   def genFunction = oneOf(if1 _, if2 _, if3 _)
+  val theTrees = Seq(Leaf(11), Branch(Leaf(12), Leaf(5)), Branch(Branch(Leaf(1), Leaf(13)), Leaf(4)))
+  val doubleTrees = Seq(Leaf(22), Branch(Leaf(24), Leaf(10)), Branch(Branch(Leaf(2), Leaf(26)), Leaf(8)))
+  def aTree = oneOf(theTrees)
+
+  def genLeaf = for {
+    n <- long
+  } yield Leaf(n.toInt)
+
+  def genTree(level: Int): Gen[Tree[Int]] = if (level > 100) genLeaf else oneOf(genLeaf, genBranch(level+1))
+
+  def genBranch(level: Int) = for {
+    l <- genTree(level)
+    r <- genTree(level)
+  } yield Branch(l, r)
+
+  lazy val trees: Gen[Tree[Int]] = genTree(0)
 
   property("Exercise 3.10: foldLeft should work") = forAll(genFunction) { f =>
     forAll { (l: immutable.List[Int], zero: Int) =>
@@ -204,4 +221,43 @@ object Chapter3Spec extends Properties("List")
     }
   }
 
+  property("Exercise 3.22: add") = forAll {
+    (lx1: immutable.List[Int], lx2: immutable.List[Int]) => {
+      val l1 = lx1.take(lx2.size)
+      val l2 = lx2.take(lx1.size)
+      val ll1 = List(l1: _*)
+      val ll2 = List(l2: _*)
+      val r1 = l1.zip(l2).map(v => v._1 + v._2)
+      checkResults(r1, add(ll1, ll2))
+    }
+  }
+
+  property("Exercise 3.23: zipWith") = forAll {
+    (lx1: immutable.List[Int], lx2: immutable.List[Int]) => {
+      val l1 = lx1.take(lx2.size)
+      val l2 = lx2.take(lx1.size)
+      val ll1 = List(l1: _*)
+      val ll2 = List(l2: _*)
+      val r1 = l1.zip(l2).map(v => v._1 * v._2)
+      checkResults(r1, zipWith(ll1, ll2)(_ * _))
+    }
+  }
+
+  property("Exercise 3.24: hasSubsequence") = true
+
+  property("Exercise 3.25: tree size") = forAll(aTree) { t =>
+    Tree.size(t) == (theTrees.indexOf(t)+1)
+  }
+
+  property("Exercise 3.26: tree max") = forAll(aTree) { t =>
+    Tree.max(t) == (theTrees.indexOf(t)+11)
+  }
+
+  property("Exercise 3.27: tree size") = forAll(aTree) { t =>
+    Tree.depth(t) == (theTrees.indexOf(t)+1)
+  }
+
+  property("Exercise 3.28: tree map") = forAll(aTree) { t =>
+    Tree.map(t)(_ * 2) == doubleTrees(theTrees.indexOf(t))
+  }
 }
